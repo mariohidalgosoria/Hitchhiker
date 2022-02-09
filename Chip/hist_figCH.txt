@@ -1,0 +1,23 @@
+mario@ph89969:~/Documents/APS_Hitchhiker/Code_APS/Chipping$ 
+
+#open octave
+
+load HK3XTcR.dat
+c=HK3XTcR(:,1);
+[pc,nc]=hist(c,unique(c));
+Tr=numel(c);
+ppc=pc/Tr;
+Pc=[nc;ppc];
+Pc=Pc';
+save pNCRT106.dat Pc
+
+#open gnuplot
+
+f(x)=a*x**(-b) + c
+fit f(x) 'pNCRT106.dat' u 1:2 via a,b,c
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 0.25821          +/- 0.00355      (1.375%)
+b               = 1.15417          +/- 0.02542      (2.202%)
+c               = 9.98373e-05      +/- 0.0005826    (583.5%)
