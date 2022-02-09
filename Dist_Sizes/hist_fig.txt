@@ -1,0 +1,101 @@
+/*Open Matlab/Octave
+for obtaining the normalized
+histograms we follow*/
+
+load HK3XTR.dat
+load HK3XTZ.dat
+load HK3XTA.dat
+
+r=HK3XTR(:,1);
+z=HK3XTZ(:,1);
+a=HK3XTA(:,1);
+
+[pr,nr]=hist(r,unique(r));#frequencies of N
+Tr=numel(r);#number of elements in N
+ppr=pr/Tr; #prob of N
+Pr=[nr;ppr];
+Pr=Pr';
+save OHK3XTR.dat Pr
+
+[pz,nz]=hist(z,unique(z));#frequencies of N
+Tz=numel(z);#number of elements in N
+ppz=pz/Tz; #prob of N
+Pz=[nz;ppz];
+Pz=Pz';
+save OHK3XTZ.dat Pz
+
+[pa,na]=hist(a,unique(a));#frequencies of N
+Ta=numel(a);#number of elements in N
+ppa=pa/Ta; #prob of N
+Pa=[na;ppa];
+Pa=Pa';
+save OHK3XTA.dat Pa
+
+/*Open gnuplot
+first we do the nonlinear fitting as is shown and then we plot*/
+
+g(x)=a * ( exp( (-c) / x ) ) / (x**2) - b
+fit g(x) 'OHK3XTR.dat' u 1:2 via a,c,b
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 10.3333          +/- 0.5449       (5.273%)
+c               = 5.77345          +/- 0.1424       (2.467%)
+b               = 0.0155521        +/- 0.001954     (12.57%)
+
+correlation matrix of the fit parameters:
+                a      c      b      
+a               1.000 
+c               0.852  1.000 
+b               0.667  0.377  1.000 
+
+
+h(x)=a * ( exp( (-c) / (x**0.6) ) ) / (x**1.6) - b
+fit h(x) 'OHK3XTZ.dat' u 1:2 via a,c,b
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 10.2941          +/- 0.5268       (5.117%)
+c               = 5.7016           +/- 0.1047       (1.837%)
+b               = 0.0137496        +/- 0.001033     (7.51%)
+
+correlation matrix of the fit parameters:
+                a      c      b      
+a               1.000 
+c               0.890  1.000 
+b               0.768  0.524  1.000 
+
+f(x)=a * ( exp (-(m*exp( -c*x ) + c*x )    ) ) + b
+fit f(x) 'OHK3XTA.dat' u 1:2 via a,m,c,b
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 17.0576          +/- 0.9589       (5.621%)
+m               = 13.3412          +/- 0.6802       (5.099%)
+c               = 1.28426          +/- 0.02756      (2.146%)
+b               = 0.00102298       +/- 0.003905     (381.7%)
+
+correlation matrix of the fit parameters:
+                a      m      c      b      
+a               1.000 
+m               0.948  1.000 
+c               0.888  0.910  1.000 
+b               0.338  0.509  0.530  1.000 
+
+set xrange[0:40]
+set yrange[-0.01:0.5]
+set style fill  solid  
+set style circle radius 0.45 
+set xlabel 'N' font "Times-Roman,25" offset 0,0,0
+set ylabel 'P(N)' font "Times-Roman,25" offset 2,3,0
+set key font ",20"
+set xtics (10,30,40) font ", 20"
+set ytics (0,0.2,0.4,0.6) font ", 20"
+plot 'OHK3XTR.dat'  u 1:2  w circles  t 'Rouse (simulation)' lc rgb 'red'
+g(x)=10.3333 * ( exp( (-5.77345) / x ) ) / (x**2) - 0.0155521
+replot g(x) t 'P(N) (theory)' lc rgb 'red' lw 3
+h(x)=10.2941 * ( exp( (-5.7016) / (x**0.6) ) ) / (x**1.6) - 0.0137496
+replot 'OHK3XTZ.dat'  u 1:2  w circles t 'Zimm (simulation) ' lc rgb  'blue'
+replot h(x) t 'P(N) (theory)'  lc rgb 'blue' lw 3
+f(x)=17.0576 * ( exp (-(13.3412*exp( -1.28426*x ) + 1.28426*x )    ) ) + 0.00102298
+replot 'OHK3XTA.dat'  u 1:2  w circles  t 'Arrhenius (simulation)' lc rgb 'black'
+replot f(x) t 'P(N) (theory)' lc rgb 'black' lw 3
+
