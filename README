@@ -1,0 +1,74 @@
+General instructions for executing simulations of the Hitchhiker model
+and corresponding data analysis
+## The code enclosed was developed by M. Hidalgo-Soria
+## Contact mariohidalgosoria@gmail.com
+### The Hitchhiker model consists on a set of interacting random
+walkers placed on a 1D lattice with periodic boundary conditions.
+The molecules follow  random binary breaking and aggregation due
+to diffusion and breaking events. 
+
+
+The codes are distributed in directories as follows:
+
+1) For computing the molecule size distribution.
+-> The folder  'Dist_Sizes' contains a C program 'HK3X106.c' for
+simulating Hitchhiker dynamics with tree different diffusion rates: Rouse,
+Zimm, and Arrhenius. It gives as an output 'HK3XT.dat' which contains the
+final molecule sizes. Also the folder contains a text file 'hist_fig.txt'
+with  generic Octave and gnuplot routines, for computing the normalized
+histograms of the molecule sizes, their non-linear fitting, and a plotting
+script. In all cases the full tagging protocol is employed.    
+
+-> Compile:
+gcc -o HK3X106  HK3X106.c -lm
+
+2) For computing the final displacements and the corresponding distribution.
+-> The folder 'Dist_Disp' contains sub-directories:
+--> 'Arrhenius', containing a C program 'HKD.c' which gives the final
+displacements of different molecule sizes employing the full tagging protocol.
+The file 'HK3XTA1.dat' contains an equilibrium initial condition, generated with
+'HK3X106.c'
+
+-> Compile:
+gcc -o HKD  HKD.c -lm
+
+-> Run:
+./HKD > xA25.dat
+
+-> 'Arrhenius' also contains a text file 'hist_fig_XA.txt' with  generic Octave
+and gnuplot routines, for computing the normalized histograms of displacements,
+their fitting, and a plotting script.
+
+-> The sub-directories 'Rouse' and 'Zimm' contain similar files which work in a
+similar way as above. 
+
+
+3) For computing the molecule size distribution using single molecule tagging
+method and employing Rouse dynamics.
+
+-> The folder 'SMDist_Sizes' contains a C program 'HK3X106z.c' for simulating
+Hitchhiker dynamics with Rouse diffusion rates. It gives as an output the final
+molecule sizes when just one monomer is initially tagged. The final molecule
+sizes are contained in the file 'HK3XTR.dat'. The text file 'hist_fig_SMz.txt'
+has  generic Octave and gnuplot routines, for computing the normalized
+histograms of the molecule sizes, their non-linear fitting, and a plotting
+script.
+
+4) For computing the molecule size distribution, with uniform random breaking
+of particles.
+
+-> The folder 'Rand_Break' contains a C program 'HK3XRB.c' which gives the
+final sizes when the Hitchhiker is implemented with a random scission of
+particles, the final sizes are stored in the file 'HK3XTRBR.dat'. The file
+'hist_figRB.txt' has  generic Octave and gnuplot routines, for  the normalized
+histograms of the molecule sizes, non-linear fitting, and a plotting script. 
+
+
+5) For computing the molecule size distribution, with chipping (unitary breaking
+of particles).
+
+-> The folder 'Chip' contains a C program 'HK3XpnC.c' which gives the
+final sizes when the Hitchhiker is implemented with unitary breaking of particles,
+the final sizes are stored in the file 'HK3XTR.dat'. The file
+'hist_figCH.txt' has  generic Octave and gnuplot routines, for  the normalized
+histograms of the molecule sizes, non-linear fitting. 
