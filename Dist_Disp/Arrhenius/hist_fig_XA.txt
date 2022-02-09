@@ -1,0 +1,52 @@
+/*Open Matlab/Octave */
+/*Computing the normalized histograms
+For xA25.dat, xA50.dat, xA102.dat, xA3103.dat,
+xA104.dat do the same as follows*/
+
+load xA104.dat
+x=xA104(:,1);
+[px,nx]=hist(x,unique(x));#frequencies of N
+Tx=numel(x);#number of elements in N
+ppx=px/Tx; #prob of N
+lpx=log(ppx);
+LP=[nx;lpx];
+LP=LP';
+save LxA104.dat LP
+
+/*open gnuplot
+for the fitting with
+Laplace and Gaussian distributions*/
+/*For xA25.dat, xA50.dat, xA102.dat  do the following*/
+f(x)=-a*abs(x)+b
+fit f(x) 'LxA102.dat' u 1:2 via a,b
+/*For xA3103.dat, xA104.dat do the following*/
+g(x)=c+m*x**2
+fit g(x) 'LxA104.dat' u 1:2 via c,m
+
+
+/*for plotting*/
+
+set xrange[-40.5:40.5]
+set yrange[-9.5:3]
+set style fill  solid  
+set style circle radius 0.7
+set xlabel 'x' font "Times-Roman,25" offset 0,-1,0
+set ylabel 'log[P(x,t)]' font "Times-Roman,25" offset -1,0,0
+set key horizontal font ",15"
+set xtics 20 font ", 20"
+set ytics 4 font ", 20"
+plot 'LxA25.dat'  u 1:2  w circles  t 't=1.25' lc rgb 'red'
+b(x)=-2.16442*abs(x)-0.503449
+replot b(x) lc rgb 'red' lw 3 t ' '
+replot 'LxA50.dat'  u 1:2  w circles  t 't=2.5' lc rgb 'blue'
+c(x)=-1.9626*abs(x)-0.244348
+replot c(x) lc rgb 'blue' lw 3 t ' '
+replot 'LxA102.dat'  u 1:2  w circles  t 't=5' lc rgb 'cyan'
+e(x)=-1.22153*abs(x)-0.773737
+replot e(x) lc rgb 'cyan' lw 3 t ' '
+replot 'LxA3103.dat'  u 1:2  w circles  t 't=150' lc rgb 'orange'
+g(x)=-3.01568-0.0110075*x**2
+replot g(x) lc rgb 'orange' lw 3 lt '.' t ' '
+replot 'LxA104.dat'  u 1:2  w circles  t 't=500' lc rgb 'green'
+h(x)=-3.4004-0.0039468*x**2
+replot h(x) lc rgb 'green' lw 3 lt '.' t ' '
