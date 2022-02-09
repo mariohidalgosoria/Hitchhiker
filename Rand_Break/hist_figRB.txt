@@ -1,0 +1,66 @@
+~/Documents/APS_Hitchhiker/Code_APS/random_breaking
+#open octave
+
+load HK3XTRBR.dat
+r=HK3XTRBR(:,1);
+[pr,nr]=hist(r,unique(r));#frequencies of N
+Tr=numel(r);#number of elements in N
+ppr=pr/Tr; #prob of N
+Pr=[nr;ppr];
+Pr=Pr';
+save HKXTRB.dat Pr
+
+
+#open gnuplot
+g(x)=a * ( exp( (-c) / x ) ) / (x**2) - b
+fit g(x) 'HKXTRB.dat' u 1:2 via a,c,b
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 5.86175          +/- 0.5051       (8.617%)
+c               = 4.66878          +/- 0.1995       (4.273%)
+b               = 0.00302762       +/- 0.0022       (72.67%)
+
+correlation matrix of the fit parameters:
+                a      c      b      
+a               1.000 
+c               0.848  1.000 
+b               0.574  0.313  1.000 
+
+
+set multiplot
+set xrange[0:80]
+set yrange[-0.0:0.32]
+set style fill  solid  
+set style circle radius 0.7 
+set xlabel 'N' font "Times-Roman,25" offset 0,0,0
+set ylabel 'P(N)' font "Times-Roman,25" offset 2,-1,0
+set key font ",20"
+set xtics 20 font ", 20"
+set ytics 0.1 font ", 20"
+g(x)=10.3333 * ( exp( (-5.77345) / x ) ) / (x**2) - 0.0155521
+h(x)=2835.24 * ( exp( (-10.342) / (x**0.375781) ) ) / (x**2.8373) - 0.0119043
+f(x)= 0.25821*x**(-1.15417) + 9.98373e-05
+plot 'OHK3XTR.dat'  u 1:2  w circles  t 'Binary Breaking (Simulations)' lc rgb 'red', g(x) t 'P(N) (theory)' lc rgb 'red' lw 3,'HKXTRB.dat'  u 1:2  w circles t 'Random Scission (Simulations)' lc rgb  'dark-violet', h(x) t 'P(N) (Fitting)'  lc rgb 'dark-violet' lw 3, 'pNCRT106.dat'  u 1:2  w circles t 'Chipping (Simulations)' lc rgb  'cyan', f(x) t 'P(N) (Fitting)'  lc rgb 'cyan' lw 3
+unset style circle radius
+unset xrange
+unset yrange
+
+set origin .6, .2
+set size .35,.35
+clear
+set bmargin 1
+set tmargin 1
+set lmargin 3
+set rmargin 3
+set style circle radius 0.9
+set log xy 
+set format y "10^{%L}"
+set xlabel 'log(N)' font "Times-Roman,15" offset 0,0,0
+set ylabel 'log(P(N))' font "Times-Roman,15" offset -2,-0.5,0
+set xrange[1:200]
+set yrange[6.144e-6:1]
+set key  font ",13"
+set xtics 100 font ", 15"
+set ytics 1e-2 font ", 15"
+plot 'OHK3XTR.dat' u 1:2 w circles lc rgb 'red' notitle, g(x) lc rgb 'red' lw 3 notitle,'HKXTRB.dat' u 1:2 w circles lc rgb 'dark-violet' lw 3 notitle, h(x) lc rgb 'dark-violet' notitle,'pNCRT106.dat' u 1:2 w circles lc rgb 'cyan' notitle, f(x) lc rgb 'cyan' lw 3 notitle 
+unset multiplot
