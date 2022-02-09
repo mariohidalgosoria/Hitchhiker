@@ -1,0 +1,74 @@
+/*Open Matlab/Octave
+for obtaining the normalized
+histograms we follow*/
+
+load HK3XTR.dat
+load HK3XTRz.dat
+
+r=HK3XTR(:,1);
+z=HK3XTRz(:,1);
+
+[pr,nr]=hist(r,unique(r));#frequencies of N
+Tr=numel(r);#number of elements in N
+ppr=pr/Tr; #prob of N
+Pr=[nr;ppr];
+Pr=Pr';
+save OHK3XTR.dat Pr
+
+[pz,nz]=hist(z,unique(z));#frequencies of N
+Tz=numel(z);#number of elements in N
+ppz=pz/Tz; #prob of N
+Pz=[nz;ppz];
+Pz=Pz';
+save OHK3XTRz.dat Pz
+
+
+/* For th enormalized histogram of
+P(z)=NP(N)/<N>*/
+
+load HK3XTR.dat #data of MM
+N=HK3XTR(:,1);
+[pN,nN]=hist(N,unique(N));#frequencies of N
+TN=numel(N);#number of elements in N
+ppN=pN/TN; #prob of N
+MeN=ppN.*nN;
+MeN=sum(MeN);#<N>
+
+mean(N)#<N> by ovtave
+DM=ppN./nN; # MM diff <1/N>
+DM=sum(DM);
+DS=1/MeN;# SM diff 1/<N>
+MS=DM/DS; #ratio <DM>/<DS>
+
+Pdfz=(nN.*ppN)/MeN;#compute p(z) from ppN
+Gre=[nN;Pdfz];
+Gre=Gre';
+save PzSMT.dat Gre
+
+/*Open gnuplot, for plotting the
+histograms*/
+
+set yrange[0.0:0.17]
+set style fill solid border -1
+set boxwidth 0.3
+set xlabel 'N,z' font "Times-Roman,25" offset 1,0,0
+set ylabel 'P(N),P(z)' font "Times-Roman,25" offset 0,6,0
+set key font ",20"
+set xtics (0,5,10,20,25,30) font ", 20"
+set ytics  (0.04,0.08,0.16) font ", 20"
+plot 'OHK3XTR.dat'  u 1:2  with boxes  t 'P(N) FT' lc rgb 'red','OHK3XTRz.dat'  u ($1-0.3):2  with boxes  t 'P(z) SM' lc rgb 'blue'
+unset boxwidth 
+
+
+set style fill solid border -1
+set boxwidth 0.3
+set xlabel 'z' font "Times-Roman,25" offset 0,0,0
+set ylabel 'P(z)' font "Times-Roman,25" offset 0,0,0
+set key font ",20"
+set xtics (0,5,10,20,25,30) font ", 20"
+set ytics  0.04 font ", 20"
+plot 'OHK3XTRz.dat'  u 1:2  w boxes  t 'P(z) (simulation)' lc rgb 'blue','PzSMT.dat'  u ($1-0.3):2  w boxes  t 'P(z)=NP(N)/<N>' lc rgb 'green'
+unset boxwidth 
+
+
+
