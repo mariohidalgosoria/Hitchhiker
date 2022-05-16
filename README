@@ -2,7 +2,7 @@ General instructions for executing simulations of the Hitchhiker model
 and corresponding data analysis
 ## The code enclosed was developed by M. Hidalgo-Soria
 ## Contact mariohidalgosoria@gmail.com
-### The Hitchhiker model consists on a set of interacting random
+### The Hitchhiker model consists of a set of interacting random
 walkers placed on a 1D lattice with periodic boundary conditions.
 The molecules follow  random binary breaking and aggregation due
 to diffusion and breaking events. 
